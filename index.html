@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ကိုးနဝင်း - Myanmar Buddhist Prayer Beads | Koenawin Mala Counter</title>
+    
+    <meta name="description" content="A beautiful 3D prayer beads (mala) app for Myanmar Buddhist meditation. Track your daily prayers with the traditional 9x9 Koenawin grid system. 108 beads for adults, 9 beads for children.">
+    <meta name="keywords" content="koenawin, ကိုးနဝင်း, myanmar buddhist, prayer beads, mala, meditation, 108 beads, buddhist prayer, ရေစင်, သီလ, mindfulness, daily prayer tracker">
+    <meta name="author" content="Hashyz">
+    <meta name="theme-color" content="#2F1B14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Koenawin">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ကိုးနဝင်း - Myanmar Buddhist Prayer Beads">
+    <meta property="og:description" content="Beautiful 3D prayer beads app with traditional 9x9 Koenawin grid system for daily Buddhist meditation tracking.">
+    <meta property="og:image" content="icon-512x512.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="my_MM">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="ကိုးနဝင်း - Myanmar Buddhist Prayer Beads">
+    <meta name="twitter:description" content="Beautiful 3D prayer beads app with traditional 9x9 Koenawin grid for daily meditation.">
+    <meta name="twitter:image" content="icon-512x512.png">
+    
+    <link rel="icon" href="icon-192x192.png" type="image/png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Myanmar:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <canvas id="rosary-canvas"></canvas>
+        
+        <div id="ui-overlay">
+            <header id="header">
+                <h1>ကိုးနဝင်း</h1>
+                <p class="subtitle">Koenawin Prayer Beads</p>
+            </header>
+            
+            <div id="daily-goal">
+                <div class="goal-header">
+                    <span class="goal-label">ယနေ့</span>
+                    <span id="today-round">Round 1</span>
+                </div>
+                <div class="goal-progress">
+                    <span id="cycles-done">0</span>
+                    <span class="goal-separator">/</span>
+                    <span id="cycles-needed">1</span>
+                    <span class="goal-text">cycles</span>
+                </div>
+                <div id="special-day" class="special-day hidden"></div>
+                <button id="settings-btn" class="settings-btn" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="bead-counter">
+                <div class="cycle-display">
+                    <span class="cycle-label">Cycle</span>
+                    <span id="cycle-count">0</span>
+                </div>
+                <div class="counter-ring">
+                    <span id="current-count">0</span>
+                    <span class="separator">/</span>
+                    <span id="total-count">108</span>
+                </div>
+                <p class="counter-label">Beads Counted</p>
+            </div>
+            
+            <div id="controls">
+                <button id="prev-btn" class="control-btn" aria-label="Previous bead">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <button id="next-btn" class="control-btn primary" aria-label="Next bead">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <button id="reset-btn" class="reset-btn" aria-label="Reset count">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+                <span>Reset</span>
+            </button>
+        </div>
+        
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>ဆက်တင်များ</h2>
+                <p class="modal-subtitle">Settings</p>
+                
+                <div class="setting-group">
+                    <label class="setting-label">စတင်သည့်နေ့ / Start Date (Monday)</label>
+                    <input type="date" id="start-date" />
+                </div>
+                
+                <div class="setting-group">
+                    <label class="setting-label">စေ့အရေအတွက် / Bead Count</label>
+                    <div class="bead-mode-toggle">
+                        <button id="mode-108" class="mode-btn active">၁၀၈ စေ့</button>
+                        <button id="mode-9" class="mode-btn">၉ စေ့</button>
+                    </div>
+                    <p class="mode-hint" id="mode-hint">108 beads - Traditional mala</p>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button id="save-settings" class="modal-btn primary">Save</button>
+                    <button id="cancel-settings" class="modal-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Loading sacred beads...</p>
+        </div>
+        
+        <div id="celebration" class="celebration hidden">
+            <div class="celebration-content">
+                <div class="celebration-icon">🙏</div>
+                <h2>သာဓု သာဓု သာဓု</h2>
+                <p>Daily goal completed!</p>
+                <p class="celebration-sub">ယနေ့ပန်းတိုင်ပြည့်စုံပါပြီ</p>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
